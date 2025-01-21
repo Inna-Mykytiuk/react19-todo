@@ -1,8 +1,18 @@
 
-fetch("http://localhost:3001/users").then((res) => {
-  console.log(res)
-});
+import { Routes, Route } from "react-router";
+import { UsersPage } from "../pages/users";
+import { TasksPage } from "../pages/tasks";
+
+// fetch("http://localhost:3001/users").then((res) => {
+//   console.log(res)
+// });
 
 export default function App() {
-  return <h1 className='text-3xl font-bold underline'>Hello world!</h1>;
+  return (
+    <Routes>
+      <Route index element={<UsersPage />} />
+      <Route path="/:userId/tasks" element={<TasksPage />} />
+    </Routes>
+  )
+
 }
