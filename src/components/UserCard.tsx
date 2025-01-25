@@ -1,31 +1,25 @@
-
-import { useTransition } from "react";
+import { useActionState } from "react";
 import { User } from "../shared/api"
-import { deleteUser } from "../shared/api";
+import { deleteUserAction } from "../pages/users/actions";
+
 
 export function UserCard({ user, refetchUsers }: { user: User, refetchUsers: () => void }) {
-  const [isPending, startTransition] = useTransition();
 
-
-  const handleDelete = async () => {
-    startTransition(async () => {
-      await deleteUser(user.id);
-      refetchUsers();
-    });
-
-  };
+  const [state, handleDelete, isPending] = useActionState(deleteUserAction({ refetchUsers, id: user.id }), {});
 
   return (
     <li key={user.id} className="border p-2 my-2 rounded bg-gray-100 flex justify-between items-center">
       {user.email}
-      <button
-        type="button"
-        onClick={handleDelete}
-        disabled={isPending}
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded disabled:bg-gray-400"
-      >
-        Delete
-      </button>
+      <form action={handleDelete}>
+        <button
+          type="submit"
+          disabled={isPending}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded disabled:bg-gray-400"
+        >
+          Delete
+          {state.error && <div className="text-red-600">{state.error}</div>}
+        </button>
+      </form>
     </li>
   )
 }

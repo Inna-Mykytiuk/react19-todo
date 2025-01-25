@@ -1,15 +1,13 @@
-import { useState, Suspense, startTransition } from "react";
+import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useUsers } from "./use-users";
 
-import { fetchUsers } from "../../shared/api";
 import { CreateUserForm } from "../../components/CreateUserForm";
 import { UsersList } from "../../components/UserList";
 
-const defaultUsersPromise = fetchUsers();
 
 export function UsersPage() {
-  const [usersPromise, setUsersPromise] = useState(defaultUsersPromise);
-  const refetchUsers = () => startTransition(() => setUsersPromise(fetchUsers()));
+  const [usersPromise, refetchUsers] = useUsers();
 
   return (
     <section className="flex flex-col ">

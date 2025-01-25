@@ -3,13 +3,14 @@ import { createUserAction } from "../pages/users/actions";
 
 export function CreateUserForm({ refetchUsers }: { refetchUsers: () => void }) {
 
-  const [state, dispatch, isPending] = useActionState(createUserAction({ refetchUsers }), {});
+  const [state, dispatch, isPending] = useActionState(createUserAction({ refetchUsers }), { email: "" });
 
   return (
     <form action={dispatch} className="flex gap-2">
       <input
         name="email"
         type="email"
+        // defaultValue={state.email}
         className="border p-2 rounded w-full"
         placeholder="Enter email"
         disabled={isPending}

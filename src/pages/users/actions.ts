@@ -1,17 +1,27 @@
-import { createUser } from "../../shared/api";
+import { createUser, deleteUser } from "../../shared/api";
 
 type CreateActionState = {
-  // defaultEmail: string;
+  email: string;
   error?: string;
 };
 
-export const createUserAction =
-  ({ refetchUsers }: { refetchUsers: () => void }) =>
-  async (
-    prevState: CreateActionState,
+export function createUserAction({
+  refetchUsers,
+}: {
+  refetchUsers: () => void;
+}) {
+  return async function (
+    _: CreateActionState,
     formData: FormData
-  ): Promise<CreateActionState> => {
+  ): Promise<CreateActionState> {
     const email = formData.get("email") as string;
+
+    if (email === "admin@gmail.com") {
+      return {
+        error: "Admin email is not allowed",
+        email,
+      };
+    }
 
     try {
       await createUser({
@@ -21,13 +31,36 @@ export const createUserAction =
       refetchUsers();
 
       return {
-        // defaultEmail: "",
+        email,
       };
     } catch (error) {
       console.error("Error creating user:", error);
       return {
-        // defaultEmail: prevState.defaultEmail,
+        email,
         error: "Error creating user",
       };
     }
   };
+}
+
+type DeleteUserActionState = {
+  error?: string;
+};
+
+export function deleteUserAction({
+  refetchUsers,
+  id,
+}: {
+  refetchUsers: () => void;
+  id: string;
+}) {
+  return async function (): Promise<DeleteUserActionState> {
+    try {
+      await deleteUser(id);
+      refetchUsers();
+      return {};
+    } catch {
+      return { error: "Error deleting user" };
+    }
+  };
+}
