@@ -1,33 +1,15 @@
-import { useState, useTransition } from "react";
-import { createUser } from "../shared/api";
+import { useActionState } from "react";
+import { createUserAction } from "../pages/users/actions";
 
 export function CreateUserForm({ refetchUsers }: { refetchUsers: () => void }) {
-  const [email, setEmail] = useState("");
 
-  const [isPending, startTransition] = useTransition();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    startTransition(async () => {
-      await createUser({
-        email,
-        id: crypto.randomUUID(),
-      });
-      startTransition(() => {
-        refetchUsers();
-        setEmail("");
-      })
-    });
-
-  };
+  const [state, dispatch, isPending] = useActionState(createUserAction({ refetchUsers }), {});
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form action={dispatch} className="flex gap-2">
       <input
+        name="email"
         type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         className="border p-2 rounded w-full"
         placeholder="Enter email"
         disabled={isPending}
@@ -39,6 +21,7 @@ export function CreateUserForm({ refetchUsers }: { refetchUsers: () => void }) {
       >
         Submit
       </button>
+      {state.error && <div className="text-red-600">{state.error}</div>}
     </form>
   );
 }
