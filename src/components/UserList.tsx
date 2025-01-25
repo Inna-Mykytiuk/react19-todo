@@ -4,6 +4,7 @@ import { UserCard } from "./UserCard";
 
 export function UsersList({ usersPromise }: { usersPromise: Promise<User[]> }) {
   const users = use(usersPromise);
+
   return (
     <ul className="flex flex-col">
       {users.map((user) => (

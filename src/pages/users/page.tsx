@@ -7,7 +7,6 @@ import { UsersList } from "../../components/UserList";
 const defaultUsersPromise = fetchUsers();
 
 export function UsersPage() {
-
   const [usersPromise, setUsersPromise] = useState(defaultUsersPromise);
   const refetchUsers = () => setUsersPromise(fetchUsers());
 
