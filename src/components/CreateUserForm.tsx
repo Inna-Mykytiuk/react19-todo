@@ -10,7 +10,6 @@ export function CreateUserForm({ refetchUsers }: { refetchUsers: () => void }) {
       <input
         name="email"
         type="email"
-        // defaultValue={state.email}
         className="border p-2 rounded w-full"
         placeholder="Enter email"
         disabled={isPending}
