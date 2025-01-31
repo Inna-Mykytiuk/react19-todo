@@ -1,9 +1,10 @@
 import { useActionState } from "react";
-import { createUserAction } from "../pages/users/actions";
+// import { createUserAction } from "../pages/users/actions";
+import { CreateUserAction } from "../pages/users/actions";
 
-export function CreateUserForm({ refetchUsers }: { refetchUsers: () => void }) {
+export function CreateUserForm({ createUserAction }: { createUserAction: CreateUserAction }) {
 
-  const [state, dispatch, isPending] = useActionState(createUserAction({ refetchUsers }), { email: "" });
+  const [state, dispatch, isPending] = useActionState(createUserAction, { email: "" });
 
   return (
     <form action={dispatch} className="flex gap-2">

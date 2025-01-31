@@ -1,16 +1,17 @@
 import { useActionState } from "react";
 import { User } from "../shared/api"
-import { deleteUserAction } from "../pages/users/actions";
+import { DeleteUserAction } from "../pages/users/actions";
 
 
-export function UserCard({ user, refetchUsers }: { user: User, refetchUsers: () => void }) {
+export function UserCard({ user, deleteUserAction }: { user: User, deleteUserAction: DeleteUserAction }) {
 
-  const [state, handleDelete, isPending] = useActionState(deleteUserAction({ refetchUsers, id: user.id }), {});
+  const [state, handleDelete, isPending] = useActionState(deleteUserAction, {});
 
   return (
     <li key={user.id} className="border p-2 my-2 rounded bg-gray-100 flex justify-between items-center">
       {user.email}
       <form action={handleDelete}>
+        <input type="hidden" name="id" value={user.id} />
         <button
           type="submit"
           disabled={isPending}
