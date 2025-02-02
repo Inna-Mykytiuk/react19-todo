@@ -5,7 +5,7 @@ import { DeleteUserAction } from "../pages/users/actions";
 
 export function UserCard({ user, deleteUserAction }: { user: User, deleteUserAction: DeleteUserAction }) {
 
-  const [state, handleDelete, isPending] = useActionState(deleteUserAction, {});
+  const [state, handleDelete] = useActionState(deleteUserAction, {});
 
   return (
     <li key={user.id} className="border p-2 my-2 rounded bg-gray-100 flex justify-between items-center">
@@ -14,7 +14,6 @@ export function UserCard({ user, deleteUserAction }: { user: User, deleteUserAct
         <input type="hidden" name="id" value={user.id} />
         <button
           type="submit"
-          disabled={isPending}
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded disabled:bg-gray-400"
         >
           Delete

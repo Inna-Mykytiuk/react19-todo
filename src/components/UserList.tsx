@@ -1,10 +1,11 @@
-import { use } from "react";
+// import { use } from "react";
 import { User } from "../shared/api";
 import { UserCard } from "./UserCard";
 import { DeleteUserAction } from "../pages/users/actions";
 
-export function UsersList({ usersPromise, deleteUserAction }: { usersPromise: Promise<User[]>, deleteUserAction: DeleteUserAction }) {
-  const users = use(usersPromise);
+
+export function UsersList({ useUsersList, deleteUserAction }: { useUsersList: () => User[], deleteUserAction: DeleteUserAction }) {
+  const users = useUsersList();
 
   return (
     <ul className="flex flex-col">

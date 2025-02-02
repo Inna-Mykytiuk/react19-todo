@@ -7,7 +7,7 @@ import { UsersList } from "../../components/UserList";
 
 
 export function UsersPage() {
-  const { usersPromise, createUserAction, deleteUserAction } = useUsers();
+  const { useUsersList, createUserAction, deleteUserAction } = useUsers();
 
   return (
     <section className="flex flex-col ">
@@ -16,7 +16,7 @@ export function UsersPage() {
         <CreateUserForm createUserAction={createUserAction} />
         <ErrorBoundary fallbackRender={({ error }) => <div className="text-red-600">{error.message}</div>}>
           <Suspense fallback={<div>Loading...</div>}>
-            <UsersList usersPromise={usersPromise} deleteUserAction={deleteUserAction} />
+            <UsersList useUsersList={useUsersList} deleteUserAction={deleteUserAction} />
           </Suspense>
         </ErrorBoundary>
       </div>
