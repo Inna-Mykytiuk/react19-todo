@@ -34,7 +34,7 @@ export function createUserAction({
       refetchUsers();
 
       return {
-        email,
+        email: "",
       };
     } catch (error) {
       console.error("Error creating user:", error);

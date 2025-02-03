@@ -1,18 +1,31 @@
-import { useActionState } from "react";
-// import { createUserAction } from "../pages/users/actions";
+import { useActionState, useOptimistic, useRef } from "react";
 import { CreateUserAction } from "../pages/users/actions";
 
 export function CreateUserForm({ createUserAction }: { createUserAction: CreateUserAction }) {
 
   const [state, dispatch] = useActionState(createUserAction, { email: "" });
 
+  const [optimisticState, setOptimisticState] = useOptimistic(state);
+
+  const form = useRef<HTMLFormElement>(null);
+
   return (
-    <form action={dispatch} className="flex gap-2">
+    <form className="flex gap-2"
+      ref={form}
+      action={(formData: FormData) => {
+        setOptimisticState({ email: "" })
+        dispatch(formData)
+        form.current?.reset();
+      }}
+    >
       <input
+        key={optimisticState.email}
         name="email"
         type="email"
         className="border p-2 rounded w-full"
         placeholder="Enter email"
+        defaultValue={optimisticState.email}
+
       />
       <button
         type="submit"
@@ -20,7 +33,9 @@ export function CreateUserForm({ createUserAction }: { createUserAction: CreateU
       >
         Submit
       </button>
-      {state.error && <div className="text-red-600">{state.error}</div>}
+      {optimisticState.error && (
+        <div className="text-red-600">{optimisticState.error}</div>
+      )}
     </form>
   );
 }
