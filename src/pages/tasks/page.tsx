@@ -1,13 +1,10 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-// import { useTasks } from "./use-tasks";
+import { TaskList } from "../../components/TaskList";
 
-// import { CreateUserForm } from "../../components/CreateUserForm";
-// import { UsersList } from "../../components/UserList";
 
 
 export function TaskPage() {
-  // const { useUsersList, createUserAction, deleteUserAction } = useUsers();
 
   return (
     <section className="flex flex-col ">
@@ -16,7 +13,7 @@ export function TaskPage() {
         {/* <CreateUserForm /> */}
         <ErrorBoundary fallbackRender={({ error }) => <div className="text-red-600">{error.message}</div>}>
           <Suspense fallback={<div>Loading...</div>}>
-            {/* <UsersList useUsersList={useUsersList} deleteUserAction={deleteUserAction} /> */}
+            <TaskList />
           </Suspense>
         </ErrorBoundary>
       </div>

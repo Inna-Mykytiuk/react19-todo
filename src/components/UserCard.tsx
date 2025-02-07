@@ -1,6 +1,7 @@
 import { useActionState } from "react";
 import { User } from "../shared/api"
 import { DeleteUserAction } from "../pages/users/actions";
+import { Link } from "react-router";
 
 
 export function UserCard({ user, deleteUserAction }: { user: User, deleteUserAction: DeleteUserAction }) {
@@ -12,6 +13,7 @@ export function UserCard({ user, deleteUserAction }: { user: User, deleteUserAct
       {user.email}
       <form action={handleDelete}>
         <input type="hidden" name="id" value={user.id} />
+        <Link to={`/${user.id}/tasks`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Tasks</Link>
         <button
           type="submit"
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded disabled:bg-gray-400"

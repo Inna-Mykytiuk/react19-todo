@@ -1,15 +1,15 @@
-import { User } from "../shared/api";
-import { UserCard } from "./UserCard";
-import { DeleteUserAction } from "../pages/users/actions";
+import { TaskCard } from "./TaskCard";
+import { Task } from "../shared/api";
 
 
-export function TaskList({ useUsersList, deleteUserAction }: { useUsersList: () => User[], deleteUserAction: DeleteUserAction }) {
-  const users = useUsersList();
+
+export function TaskList() {
+  const tasks = [] as Task[];
 
   return (
     <ul className="flex flex-col">
-      {users.map((user) => (
-        <UserCard key={user.id} user={user} deleteUserAction={deleteUserAction} />
+      {tasks.map((task) => (
+        < TaskCard key={task.id} task={task} />
       ))}
     </ul>
   )
