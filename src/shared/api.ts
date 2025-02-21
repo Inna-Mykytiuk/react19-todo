@@ -3,14 +3,6 @@ export type User = {
   email: string;
 };
 
-export type Task = {
-  id: string;
-  userId: string;
-  title: string;
-  // done: boolean;
-  done: string;
-  createAt: string;
-};
 export function fetchUsers() {
   return fetch("http://localhost:3001/users")
     .then((res) => {
@@ -65,6 +57,25 @@ export function deleteUser(id: string) {
     });
 }
 
+export type Task = {
+  id: string;
+  userId: string;
+  title: string;
+  done: boolean;
+  createdAt: number;
+};
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  first: number;
+  items: number;
+  last: number;
+  next: number | null;
+  page: number;
+  pages: number;
+  prev: number | null;
+};
+
 export function fetchTasks({
   page = 1,
   per_page = 10,
@@ -75,6 +86,7 @@ export function fetchTasks({
   per_page?: number;
   filters?: {
     userId?: string;
+    title?: string;
   };
   sort?: {
     createdAt: "asc" | "desc";
@@ -83,20 +95,10 @@ export function fetchTasks({
   return fetch(
     `http://localhost:3001/tasks?_page=${page}&_per_page=${per_page}&_sort=${
       sort.createdAt === "asc" ? "createdAt" : "-createdAt"
-    }&userId=${filters?.userId}`
+    }&userId=${filters?.userId}&title=${filters?.title}`
   )
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(
-          `Failed to fetch tasks: ${res.status} ${res.statusText}`
-        );
-      }
-      return res.json();
-    })
-    .catch((error) => {
-      console.error("Error fetching tasks:", error);
-      throw error;
-    });
+    .then((res) => res.json() as Promise<PaginatedResponse<Task>>)
+    .then((r) => ({ ...r, page }));
 }
 
 export function createTask(task: Omit<Task, "id" | "createdAt">) {

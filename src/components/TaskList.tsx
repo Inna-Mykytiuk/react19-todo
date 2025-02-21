@@ -1,16 +1,20 @@
-import { TaskCard } from "./TaskCard";
+import { use } from "react";
 import { Task } from "../shared/api";
+import { TaskCard } from "./TaskCard";
 
-
-
-export function TaskList() {
-  const tasks = [] as Task[];
-
+export function TasksList({
+  tasksPromise,
+  refetchTasks,
+}: {
+  tasksPromise: Promise<Task[]>;
+  refetchTasks: () => void;
+}) {
+  const tasks = use(tasksPromise);
   return (
-    <ul className="flex flex-col">
+    <div className="flex flex-col">
       {tasks.map((task) => (
-        < TaskCard key={task.id} task={task} />
+        <TaskCard key={task.id} task={task} refetchTasks={refetchTasks} />
       ))}
-    </ul>
-  )
+    </div>
+  );
 }

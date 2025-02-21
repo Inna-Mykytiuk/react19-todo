@@ -1,19 +1,38 @@
+import { Suspense, useActionState } from "react";
 import { Task } from "../shared/api";
+import { deleteTaskAction } from "../pages/tasks/actions";
+import { UserPreview } from "./UserPreview";
 
-export function TaskCard({ task }: { task: Task }) {
+export function TaskCard({
+  task,
+  refetchTasks,
+}: {
+  task: Task;
+  refetchTasks: () => void;
+}) {
+  const [deleteState, handleDelete, isPending] = useActionState(
+    deleteTaskAction({ refetchTasks }),
+    {}
+  );
 
   return (
-    <li key={task.id} className="border p-2 my-2 rounded bg-gray-100 flex justify-between items-center">
-      {task.title}
-      <form>
+    <div className="border p-2 m-2 rounded bg-gray-100 flex gap-2">
+      {task.title} -
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserPreview userId={task.userId} />
+      </Suspense>
+      <form className="ml-auto" action={handleDelete}>
         <input type="hidden" name="id" value={task.id} />
         <button
-          type="submit"
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded disabled:bg-gray-400"
+          disabled={isPending}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto disabled:bg-gray-400"
         >
-          Delete
+          Delete{" "}
+          {deleteState.error && (
+            <div className="text-red-500">{deleteState.error}</div>
+          )}
         </button>
       </form>
-    </li>
-  )
+    </div>
+  );
 }

@@ -6,7 +6,7 @@ import { CreateUserForm } from "../../components/CreateUserForm";
 import { UsersList } from "../../components/UserList";
 
 
-export function UsersPage() {
+export default function UsersPage() {
   const { useUsersList, createUserAction, deleteUserAction } = useUsers();
 
   return (

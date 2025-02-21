@@ -1,22 +1,69 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { TaskList } from "../../components/TaskList";
+import { useParams } from "react-router";
+import { useTasks } from "./use-tasks";
+import { useSort } from "./useSort";
+import { useSearch } from "./useSearch";
+import { CreateTaskForm } from "../../components/CreateTaskForm";
+import { TasksList } from "../../components/TaskList";
+import { Pagination } from "../../components/Pagination";
+import { SearchSortControls } from "../../components/SearchSortControls";
 
+export default function TasksPage() {
+  const { userId = "" } = useParams();
 
+  const {
+    paginatedTasksPromise,
+    refetchTasks,
+    defaultCreatedAtSort,
+    defaultSearch,
+  } = useTasks({ userId });
 
-export function TaskPage() {
+  const { search, handleChangeSearch } = useSearch(defaultSearch, (title) =>
+    refetchTasks({ title })
+  );
+
+  const { sort, handleChangeSort } = useSort(defaultCreatedAtSort, (sort) =>
+    refetchTasks({ createdAtSortNew: sort as "asc" | "desc" })
+  );
+
+  const onPageChange = async (newPage: number) => {
+    refetchTasks({ page: newPage });
+  };
+
+  const tasksPromise = useMemo(
+    () => paginatedTasksPromise.then((r) => r.data),
+    [paginatedTasksPromise]
+  );
 
   return (
-    <section className="flex flex-col ">
-      <div className="container mx-auto p-4 pt-10 gap-4 max-w-[600px]">
-        <h1 className="text-3xl font-bold mb-10">Users Page</h1>
-        {/* <CreateUserForm /> */}
-        <ErrorBoundary fallbackRender={({ error }) => <div className="text-red-600">{error.message}</div>}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <TaskList />
-          </Suspense>
-        </ErrorBoundary>
-      </div>
-    </section>
+    <main className="container mx-auto p-4 pt-10 flex flex-col gap-4">
+      <h1 className="text-3xl font-bold underline">Tasks</h1>
+      <CreateTaskForm refetchTasks={() => refetchTasks({})} userId={userId} />
+      <SearchSortControls
+        search={search}
+        sort={sort}
+        handleChangeSearch={handleChangeSearch}
+        handleChangeSort={handleChangeSort}
+      />
+      <ErrorBoundary
+        fallbackRender={(e) => (
+          <div className="text-red-500">
+            Something went wrong:{JSON.stringify(e)}{" "}
+          </div>
+        )}
+      >
+        <Suspense fallback={<div>Loading...</div>}>
+          <TasksList
+            tasksPromise={tasksPromise}
+            refetchTasks={() => refetchTasks({})}
+          />
+          <Pagination
+            tasksPaginated={paginatedTasksPromise}
+            onPageChange={onPageChange}
+          />
+        </Suspense>
+      </ErrorBoundary>
+    </main>
   );
 }
